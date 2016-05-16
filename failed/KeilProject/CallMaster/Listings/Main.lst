@@ -1,0 +1,38 @@
+C51 COMPILER V9.54   MAIN                                                                  05/10/2016 17:06:47 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN ..\OutHex\Main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Sources\Main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listi
+                    -ngs\Main.lst) TABS(2) OBJECT(..\OutHex\Main.obj)
+
+line level    source
+
+   1          #include "../PublicSources/Headers/PreMacro.h"
+   2          
+   3          extern void lcd_init();
+   4          extern void lcd_cls(u8 screen);
+   5          extern void lcd_disp_number(u8 screen,u8 page,u8 col,u8 mun);
+   6          void lcd_write_char(u8 x,u8 y,u8 c);
+   7          extern void lcd_write_string(u8 x,u8 y,char* ptr);
+   8          void main(void){
+   9   1        lcd_init();
+  10   1        lcd_cls(0);
+  11   1        lcd_write_string(0,0,"Call From: Bed 3");
+  12   1      
+  13   1        while(true);
+  14   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     22    ----
+   CONSTANT SIZE    =     17    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

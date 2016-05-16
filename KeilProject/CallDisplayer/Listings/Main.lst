@@ -1,0 +1,55 @@
+C51 COMPILER V9.54   MAIN                                                                  05/16/2016 16:53:51 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN ..\OutHex\Main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Sources\Main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listi
+                    -ngs\Main.lst) TABS(2) OBJECT(..\OutHex\Main.obj)
+
+line level    source
+
+   1          #include "../PublicSources/Headers/PreMacro.h"
+   2          #include "../PublicSources/Headers/Serial.h"
+   3          #include "./Headers/DotMatrix.h"
+   4          #include "./Headers/DotMatrixExec.h"
+   5          #include "./Headers/DS1302.h"
+   6          
+   7          u8 COM_ADDR =  DISP_ADDR;
+   8          u8 NEXT_ADDR = SLAVE_ADDR;
+   9          u8 flash_delay = 100;
+  10          
+  11          extern bool show_flag;
+  12          
+  13          void main()
+  14          {
+  15   1          serial_init();
+  16   1          ds_init();
+  17   1          while(true)
+  18   1          {
+  19   2              if(show_flag == SHOW_MAKER)
+  20   2              {
+  21   3                  show_maker();
+  22   3              }
+  23   2              else if(show_flag == SHOW_TIME)
+  24   2              {
+  25   3                  show_time();
+  26   3              }
+  27   2      
+  28   2          }
+  29   1      }
+  30          
+  31          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     22    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

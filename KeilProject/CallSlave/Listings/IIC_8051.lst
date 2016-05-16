@@ -1,0 +1,166 @@
+C51 COMPILER V9.54   IIC_8051                                                              05/10/2016 12:51:34 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE IIC_8051
+OBJECT MODULE PLACED IN ..\OutHex\IIC_8051.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\PublicSources\IIC_8051.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND 
+                    -PRINT(.\Listings\IIC_8051.lst) TABS(2) OBJECT(..\OutHex\IIC_8051.obj)
+
+line level    source
+
+   1          #include "./Headers/IIC_8051.h"
+   2          #include <reg51.h>
+   3          
+   4          #define RUNING    0   /* 机器接收数据状态 */
+   5          #define WAITING   1   /* 机器拒绝接收数据状态 */
+   6          #define BUFFSIZE  64    /* 一次所能接收的最大数据 */
+   7          #define ADDRESS   0x01  /* 给从机定义的地址 */
+   8          
+   9          sbit SIG = P3^2;      /* 信号线 */
+  10          sbit SDA = P2^0;      /* 数据线 */
+  11          sbit led = P1^0;
+  12          
+  13          char isFinish;      /* 数据接收完成标志位 */
+  14          char BUFFER[BUFFSIZE];  /* 数据接收缓冲区 */
+  15          
+  16          /******************************************************************************
+  17          **函数名：IIC_Delay
+  18          **功  能：为其他函数提供必要的延时处理
+  19          **参  数：t:延时时常
+  20          **返回值：无
+  21          ******************************************************************************/
+  22          void IIC_Delay(int t)
+  23          {
+  24   1        int i;
+  25   1      
+  26   1        for ( i = 0; i < t; ++i );
+  27   1      }
+  28          /******************************************************************************
+  29          **函数名：IIC_Start
+  30          **功  能：通知从机主机将要发送数据
+  31          **参  数：无
+  32          **返回值：无
+  33          ******************************************************************************/
+  34          void IIC_Start()
+  35          {
+  36   1        SIG = 0;    /* 使信号线置0触发从机中断以便从机开始接收数据 */
+  37   1        IIC_Delay( 1 ); /* 稍作延时以便从机响应中断 */
+  38   1        SIG = 1;    /* 重新拉高信号线 */
+  39   1      }
+  40          /******************************************************************************
+  41          **函数名：IIC_Send
+  42          **功  能：主机发送数据到从机
+  43          **参  数：pstr：待发送的数据，size：发送字节的个数
+  44          **返回值：无
+  45          ******************************************************************************/
+  46          void IIC_Send(char *pstr,int size)
+  47          {
+*** WARNING C235 IN LINE 47 OF ..\PublicSources\IIC_8051.c: parameter 1: different types
+*** WARNING C235 IN LINE 47 OF ..\PublicSources\IIC_8051.c: parameter 2: different types
+  48   1          int i;
+  49   1        char tmp;
+  50   1      
+  51   1        while ( size != 0 )
+  52   1        {
+C51 COMPILER V9.54   IIC_8051                                                              05/10/2016 12:51:34 PAGE 2   
+
+  53   2          tmp = *pstr++;
+  54   2      
+  55   2          /* 发送有效数据位 */
+  56   2          for ( i = 0; i < 8; ++i )
+  57   2          {   
+  58   3            SDA = (bit)( tmp & 0x01 );
+  59   3            IIC_Delay( 40 );      /* 稍作延时以便从机接收 */
+  60   3            tmp >>= 1;    
+  61   3          }
+  62   2      
+  63   2          /* 发送结尾信号（0：表示结束发送，1：表示继续发送） */
+  64   2          if ( (size - 1) == 0 )
+  65   2          {
+  66   3            SDA = 0;
+  67   3          }
+  68   2          else
+  69   2          {
+  70   3            SDA = 1;
+  71   3          }
+  72   2          IIC_Delay( 40 );
+  73   2          
+  74   2          size--;         
+  75   2        }
+  76   1      
+  77   1      }
+  78          /******************************************************************************
+  79          **函数名：IIC_GetDatas
+  80          **功  能：获得从主机接收到的数据
+  81          **参  数：pstr：存储接收到的数据
+  82          **返回值：无
+  83          ******************************************************************************/
+  84          void IIC_GetDatas(char *pstr)
+  85          {
+  86   1         if ( isFinish == 1 )
+  87   1         {
+  88   2           P0 = BUFFER[0]; //改变BUFFER的下标可以验证数据正确性，这里只显示接收到的从机地址
+  89   2         }
+  90   1      }
+*** WARNING C280 IN LINE 84 OF ..\PublicSources\IIC_8051.c: 'pstr': unreferenced local variable
+  91          /******************************************************************************
+  92          **函数名：IIC_Rec
+  93          **功  能：接收主机数据（中断函数）
+  94          **参  数：无
+  95          **返回值：无
+  96          ******************************************************************************/
+  97          void IIC_Rec() interrupt 0
+  98          {
+  99   1        int i;
+ 100   1        int j = 0;
+ 101   1        char tmp;
+ 102   1        char byte;
+ 103   1      
+ 104   1        IIC_Delay( 2 ); /* 稍微延时等待主机的发送函数执行到恰当的位置，以便保持接收发送的同步 */
+ 105   1        isFinish = 0;   /* 重置接收数据是否完成标志位 */
+ 106   1        EX0 = 0;    /* 关中断防止不必要的干扰 */
+ 107   1      
+ 108   1        do
+ 109   1        { 
+ 110   2          byte = 0x00;
+ 111   2          /* 接收数据 */
+ 112   2          for ( i = 0; i < 8; ++i )
+ 113   2          { 
+C51 COMPILER V9.54   IIC_8051                                                              05/10/2016 12:51:34 PAGE 3   
+
+ 114   3            tmp = SDA | 0x00;
+ 115   3            tmp <<= i; 
+ 116   3            byte |= tmp;
+ 117   3            IIC_Delay( 40 );  /* 稍作延时以便主机发送 */
+ 118   3          }
+ 119   2          tmp = SDA | 0x00;
+ 120   2          IIC_Delay( 40 );
+ 121   2          
+ 122   2          /* 判断首个字节是否与从机地址对应，对应则继续接收，反之则放弃接收 */
+ 123   2          if ( byte != ADDRESS && j == 0 )
+ 124   2          {
+ 125   3            break;
+ 126   3          }   
+ 127   2          BUFFER[j++] = byte;
+ 128   2      
+ 129   2        }while( tmp );
+ 130   1      
+ 131   1        isFinish = 1; /* 接收数据完成 */
+ 132   1      
+ 133   1        led = 0;
+ 134   1        EX0 = 1;  
+ 135   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    292    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     65      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  3 WARNING(S),  0 ERROR(S)

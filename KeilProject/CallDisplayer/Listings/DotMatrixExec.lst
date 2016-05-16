@@ -1,0 +1,174 @@
+C51 COMPILER V9.54   DOTMATRIXEXEC                                                         05/16/2016 16:53:51 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE DOTMATRIXEXEC
+OBJECT MODULE PLACED IN ..\OutHex\DotMatrixExec.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Sources\DotMatrixExec.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRIN
+                    -T(.\Listings\DotMatrixExec.lst) TABS(2) OBJECT(..\OutHex\DotMatrixExec.obj)
+
+line level    source
+
+   1          #include "../PublicSources/Headers/PreMacro.h"
+   2          #include "./Headers/DotMatrix.h"
+   3          #include "./Headers/DotMatrixExec.h"
+   4          #include "./Headers/DS1302.h"
+   5          #include <reg52.h>
+   6          
+   7          
+   8          extern bool occur_inrpt;
+   9          extern u8 call_data[SERIAL_CHACHE_SIZE];
+  10          extern u8 call_cmd[SERIAL_CHACHE_SIZE];
+  11          extern bool cmd_is_valid(void);
+  12          
+  13          void update_buf( void );
+  14          void deal_with_cmd(u8 cmd);
+  15          
+  16          //呼叫者缓存
+  17          u8  buf_maker[MAX_SIZE] = { NULL };
+  18          //int to string 缓存
+  19          u8  buf_itostr[5] = { NULL };
+  20          //显示呼叫者缓存
+  21          u8  buf_show_maker[8] = { 'A', 'I', 'D', ':', NULL };
+  22          //显示时间缓存
+  23          u8  buf_show_time[8] = {NULL};
+  24          //呼叫者缓存末尾指针 呼叫者的数量 + 1
+  25          u8  end_point = 0;
+  26          //显示标志 用与切换 TIME 与 MAKER
+  27          bool  show_flag = SHOW_TIME;
+  28          
+  29          /**
+  30           * [show_maker 显示呼叫]
+  31           */
+  32          void show_maker()
+  33          {
+  34   1          if ( cmd_is_valid() == true )
+  35   1          {
+  36   2              deal_with_cmd(call_cmd[2]);
+  37   2          }
+  38   1          if ( end_point == 0 )
+  39   1          {
+  40   2              show_flag = SHOW_TIME;
+  41   2          }
+  42   1      
+  43   1      
+  44   1          dm_write_string( 1, buf_show_maker );
+  45   1      }
+  46          
+  47          /**
+  48           * [update_buf 更新相关缓存]
+  49           */
+  50          void update_buf( void )
+  51          {
+  52   1          u8   *ptr   = buf_itostr;
+  53   1          u8 i = 0;
+  54   1          itostr( buf_maker[end_point - 1], buf_itostr );
+C51 COMPILER V9.54   DOTMATRIXEXEC                                                         05/16/2016 16:53:51 PAGE 2   
+
+  55   1          for ( i = 4; i < 8; ++i )
+  56   1          {
+  57   2              buf_show_maker[i] = NULL;
+  58   2          }
+  59   1          i = 4;
+  60   1          while ( *ptr != NULL )
+  61   1          {
+  62   2              buf_show_maker[i] = buf_itostr[i - 4];
+  63   2              ++i;
+  64   2              ptr++;
+  65   2          }
+  66   1      }
+  67          
+  68          /**
+  69           * [call_add_end 添加一数据到缓存末尾]
+  70           */
+  71          void call_add_end(void)
+  72          {
+  73   1          buf_maker[end_point++] = call_data[1];
+  74   1          update_buf();
+  75   1      }
+  76          
+  77          /**
+  78           * [call_del_end 删除缓存末尾数据]
+  79           */
+  80          void call_del_end(void)
+  81          {
+  82   1          del_array_elm(buf_maker, --end_point, MAX_SIZE);
+  83   1          update_buf();
+  84   1      }
+  85          
+  86          /**
+  87           * [call_del_all 清空缓存]
+  88           */
+  89          void call_del_all(void)
+  90          {
+  91   1          u8 i = 0;
+  92   1          for(i = 0; i < end_point; ++i)
+  93   1          {
+  94   2              del_array_elm(buf_maker, i, MAX_SIZE);
+  95   2          }
+  96   1          end_point = 0;
+  97   1          P0 = end_point;
+  98   1          update_buf();
+  99   1      }
+ 100          
+ 101          SysTime time;
+ 102          
+ 103          /**
+ 104           * [show_time 显示时间]
+ 105           */
+ 106          void show_time()
+ 107          {
+ 108   1          if(cmd_is_valid() == true)
+ 109   1          {
+ 110   2              show_flag = SHOW_MAKER;
+ 111   2              deal_with_cmd(call_cmd[2]);
+ 112   2              return;
+ 113   2          }
+ 114   1          ds_get_time(&time);
+ 115   1          buf_show_time[0] = time.hour / 10 + '0';
+ 116   1          buf_show_time[1] = time.hour % 10 + '0';
+C51 COMPILER V9.54   DOTMATRIXEXEC                                                         05/16/2016 16:53:51 PAGE 3   
+
+ 117   1          buf_show_time[2] = ':';
+ 118   1          buf_show_time[3] = time.minute / 10 + '0';
+ 119   1          buf_show_time[4] = time.minute % 10 + '0';
+ 120   1          buf_show_time[5] = ':';
+ 121   1          buf_show_time[6] = time.second / 10 + '0';
+ 122   1          buf_show_time[7] = time.second % 10 + '0';
+ 123   1          dm_write_string(1, buf_show_time);
+ 124   1      }
+ 125          
+ 126          /**
+ 127           * [deal_with_cmd 命令处理]
+ 128           * @param cmd [待处理的命令]
+ 129           */
+ 130          void deal_with_cmd(u8 cmd)
+ 131          {
+ 132   1          switch(cmd)
+ 133   1          {
+ 134   2          case CALL_ADD:
+ 135   2              call_add_end();
+ 136   2              break;
+ 137   2          case CALL_DEL:
+ 138   2              call_del_end();
+ 139   2              break;
+ 140   2          case CALL_CLS:
+ 141   2              call_del_all();
+ 142   2              break;
+ 143   2          default:
+ 144   2              break;
+ 145   2          }
+ 146   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    300    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     49       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

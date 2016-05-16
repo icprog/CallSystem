@@ -1,0 +1,9 @@
+"..\OutHex\STARTUP.obj",
+"..\OutHex\Main.obj",
+"..\OutHex\LCD12864.obj",
+"..\OutHex\Keyboard.obj",
+"..\OutHex\LCD12864Exec.obj",
+"..\OutHex\Delay.obj",
+"..\OutHex\Serial.obj" 
+TO "..\OutHex\CallMaster" 
+PRINT(".\Listings\CallMaster.m51") RAMSIZE(256) 

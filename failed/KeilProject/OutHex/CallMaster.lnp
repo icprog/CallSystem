@@ -1,0 +1,6 @@
+"..\OutHex\STARTUP.obj",
+"..\OutHex\Main.obj",
+"..\OutHex\LCD12864.obj",
+"..\OutHex\Delay.obj" 
+TO "..\OutHex\CallMaster" 
+PRINT(".\Listings\CallMaster.m51") RAMSIZE(256) 

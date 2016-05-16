@@ -1,0 +1,6 @@
+"..\OutHex\STARTUP.obj",
+"..\OutHex\Main.obj",
+"..\OutHex\Keyboard.obj",
+"..\OutHex\Delay.obj" 
+TO "..\OutHex\CallSlave" 
+PRINT(".\Listings\CallSlave.m51")

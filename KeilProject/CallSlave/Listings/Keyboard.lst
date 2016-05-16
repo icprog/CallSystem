@@ -1,0 +1,70 @@
+C51 COMPILER V9.54   KEYBOARD                                                              05/16/2016 16:51:21 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE KEYBOARD
+OBJECT MODULE PLACED IN ..\OutHex\Keyboard.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Sources\Keyboard.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\Keyboard.lst) TABS(2) OBJECT(..\OutHex\Keyboard.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "../PublicSources/Headers/PreMacro.h"
+   3          #include "./Headers/Keyboard.h"
+   4          
+   5          u8 key_table[16] = {
+   6              0xee,0xde,0xbe,0x7e,
+   7              0xed,0xdd,0xbd,0x7d,
+   8              0xeb,0xdb,0xbb,0x7b,
+   9              0xe7,0xd7,0xb7,0x77
+  10          
+  11          };
+  12          /**
+  13           * [key_scan 反线法扫描键盘]
+  14           * @return  [按键的坐标]
+  15           */
+  16          u8 key_scan( void )
+  17          {
+  18   1          u8 x, y, key, tmp,i; 
+  19   1          u8 num = 0;
+  20   1          tmp = 0x0f; 
+  21   1          P1 = tmp;                   //P1口：4列送0000、4行送1111；
+  22   1          if (P1 != tmp)              //1判断是否有按键按下；
+  23   1          {
+  24   2              delay_ms(10);            //延时10毫秒消抖动；
+  25   2              P1 = tmp;               //P1口：列送0000、行送1111；
+  26   2              if (P1 != tmp)          //2次判断是否有按键按下；
+  27   2              {
+  28   3                  x = P1 & tmp;      //取按下矩阵键盘的行坐标
+  29   3                  tmp = ~tmp;       //按位取反，线反转使用；
+  30   3                  P1 = tmp;          //线反转P1口：4列送高电平、4行送低电平；
+  31   3                  y = P1 & tmp;      //取按下矩阵键盘的列坐标
+  32   3                  key = x | y;        //行坐标x、列坐标y 进行或运算组合在一起。
+  33   3                  while(P1 != tmp);  //按键释放检测语句
+  34   3                  P1 = key;           //用流水灯显示当前的P1口状态
+  35   3                  for(i = 0;i<16;++i){
+  36   4                      if(key_table[i] == key){
+  37   5                          num = i+1;
+  38   5                          break;
+  39   5                      }
+  40   4                  }
+  41   3              }
+  42   2          }
+  43   1          return num;
+  44   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     76    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.54   KEYBOARD                                                              05/16/2016 16:51:21 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

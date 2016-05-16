@@ -1,0 +1,54 @@
+C51 COMPILER V9.54   MAIN                                                                  05/16/2016 16:51:21 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN ..\OutHex\Main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Sources\Main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listi
+                    -ngs\Main.lst) TABS(2) OBJECT(..\OutHex\Main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "../PublicSources/Headers/PreMacro.h"
+   3          #include "../PublicSources/Headers/Serial.h"
+   4          #include "./Headers/Keyboard.h"
+   5          
+   6          u8  COM_ADDR = SLAVE_ADDR;
+   7          u8  NEXT_ADDR = DISP_ADDR;
+   8          
+   9          void main(void)
+  10          {
+  11   1          u8 i = 0,maker = 0;
+  12   1          serial_init();
+  13   1      
+  14   1          while(1)
+  15   1          {
+  16   2              maker = key_scan();
+  17   2              if(maker != 0)
+  18   2              {
+  19   3                  P0 = maker;
+  20   3                  serial_send(DISP_ADDR, CALL_ADD, maker);
+  21   3                delay_ms(100);
+  22   3                  serial_send(MASTER_ADDR, CALL_ADD, maker);
+  23   3                  maker = 0;
+  24   3              }
+  25   2              if(cmd_is_valid()){
+  26   3                // do something
+  27   3              }
+  28   2          }
+  29   1      }
+  30          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     50    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

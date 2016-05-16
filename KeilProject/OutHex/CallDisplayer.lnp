@@ -1,0 +1,9 @@
+"..\OutHex\STARTUP.obj",
+"..\OutHex\Main.obj",
+"..\OutHex\DotMatrix.obj",
+"..\OutHex\DotMatrixExec.obj",
+"..\OutHex\DS1302.obj",
+"..\OutHex\Delay.obj",
+"..\OutHex\Serial.obj" 
+TO "..\OutHex\CallDisplayer" 
+PRINT(".\Listings\CallDisplayer.m51") RAMSIZE(256) 

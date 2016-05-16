@@ -1,0 +1,261 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/11/2016  23:39:41  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE ..\OutHex\STARTUP.obj, ..\OutHex\Delay.obj, ..\OutHex\Main.obj, ..\OutHex\DotMatrix.obj TO .
+>> .\OutHex\CallDisplayer PRINT (.\Listings\CallDisplayer.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  ..\OutHex\STARTUP.obj (?C_STARTUP)
+  ..\OutHex\Delay.obj (DELAY)
+  ..\OutHex\Main.obj (MAIN)
+  ..\OutHex\DotMatrix.obj (DOTMATRIX)
+
+
+LINK MAP OF MODULE:  ..\OutHex\CallDisplayer (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0003H     UNIT         _DATA_GROUP_
+            IDATA   000BH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0600H     UNIT         ?CO?DOTMATRIX
+            CODE    0603H     006CH     UNIT         ?PR?_DM_WRITE_CHAR?DOTMATRIX
+            CODE    066FH     0021H     UNIT         ?PR?_HC595_WRITE_BYTE?DOTMATRIX
+            CODE    0690H     0012H     UNIT         ?PR?MAIN?MAIN
+            CODE    06A2H     0012H     UNIT         ?PR?_DELAY?DOTMATRIX
+            CODE    06B4H     0011H     UNIT         ?PR?_DELAY_MS?DELAY
+            CODE    06C5H     000EH     UNIT         ?PR?HC595_OUT?DOTMATRIX
+            CODE    06D3H     000CH     UNIT         ?C_C51STARTUP
+            CODE    06DFH     000BH     UNIT         ?PR?_DELAY_US?DELAY
+
+
+
+OVERLAY MAP OF MODULE:   ..\OutHex\CallDisplayer (?C_STARTUP)
+
+
+SEGMENT                                   DATA_GROUP 
+  +--> CALLED SEGMENT                   START    LENGTH
+-------------------------------------------------------
+?C_C51STARTUP                           -----    -----
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                           -----    -----
+  +--> ?PR?_DM_WRITE_CHAR?DOTMATRIX
+
+?PR?_DM_WRITE_CHAR?DOTMATRIX            0008H    0003H
+  +--> ?CO?DOTMATRIX
+  +--> ?PR?_DELAY_US?DELAY
+
+
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/11/2016  23:39:41  PAGE 2
+
+
+SYMBOL TABLE OF MODULE:  ..\OutHex\CallDisplayer (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:06D3H         SEGMENT       ?C_C51STARTUP
+  I:000BH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:06D6H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:06D3H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:06D3H         LINE#         133
+  C:06D5H         LINE#         134
+  C:06D6H         LINE#         135
+  C:06D7H         LINE#         136
+  C:06D9H         LINE#         185
+  C:06DCH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        DELAY
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:06B4H         PUBLIC        _delay_ms
+  C:06DFH         PUBLIC        _delay_us
+  -------         PROC          _DELAY_MS
+  D:0007H         SYMBOL        t
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:06B4H         LINE#         2
+  C:06B4H         LINE#         3
+  C:06B6H         LINE#         4
+  C:06BCH         LINE#         5
+  C:06C4H         LINE#         7
+  -------         ENDPROC       _DELAY_MS
+  -------         PROC          _DELAY_US
+  D:0006H         SYMBOL        t
+  C:06DFH         LINE#         9
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/11/2016  23:39:41  PAGE 3
+
+
+  C:06DFH         LINE#         10
+  C:06E9H         LINE#         11
+  -------         ENDPROC       _DELAY_US
+  -------         ENDMOD        DELAY
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0690H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  B:00A0H.3       PUBLIC        EN_54
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:0690H         LINE#         10
+  C:0690H         LINE#         12
+  C:0692H         LINE#         14
+  C:0692H         LINE#         16
+  C:0699H         LINE#         17
+  C:06A0H         LINE#         19
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DOTMATRIX
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  B:00A0H.0       PUBLIC        SH_CP
+  C:06A6H         PUBLIC        _delay
+  C:066FH         PUBLIC        _hc595_write_byte
+  B:00A0H.1       PUBLIC        DS
+  D:00B8H         PUBLIC        IP
+  B:00A0H.2       PUBLIC        ST_CP
+  C:06C5H         PUBLIC        hc595_out
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:0003H         PUBLIC        dm_ascii
+  C:0603H         PUBLIC        _dm_write_char
+  D:00C8H         PUBLIC        T2CON
+  B:00A0H.3       PUBLIC        ROW_EN
+  D:00D0H         PUBLIC        PSW
+  C:06A2H         SYMBOL        L?0023
+  -------         PROC          L?0022
+  -------         ENDPROC       L?0022
+  C:06A2H         SYMBOL        L?0023
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        z
+  -------         DO            
+  D:0007H         SYMBOL        i
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/11/2016  23:39:41  PAGE 4
+
+
+  D:0006H         SYMBOL        j
+  -------         ENDDO         
+  C:06A6H         LINE#         15
+  C:06A6H         LINE#         16
+  C:06A6H         LINE#         18
+  C:06ACH         LINE#         19
+  C:06B3H         LINE#         20
+  -------         ENDPROC       _DELAY
+  -------         PROC          HC595_OUT
+  C:06C5H         LINE#         22
+  C:06C5H         LINE#         23
+  C:06C5H         LINE#         24
+  C:06C7H         LINE#         25
+  C:06CAH         LINE#         26
+  C:06CCH         LINE#         27
+  -------         ENDPROC       HC595_OUT
+  -------         PROC          _HC595_WRITE_BYTE
+  D:0005H         SYMBOL        byte
+  -------         DO            
+  D:0004H         SYMBOL        tmp
+  -------         ENDDO         
+  C:066FH         LINE#         31
+  C:0671H         LINE#         32
+  C:0671H         LINE#         34
+  C:0673H         LINE#         35
+  C:0673H         LINE#         36
+  C:0677H         LINE#         37
+  C:0677H         LINE#         38
+  C:0679H         LINE#         39
+  C:067BH         LINE#         40
+  C:067DH         LINE#         41
+  C:067DH         LINE#         42
+  C:067FH         LINE#         43
+  C:0682H         LINE#         44
+  C:0684H         LINE#         45
+  C:0687H         LINE#         46
+  C:068BH         LINE#         47
+  C:068FH         LINE#         48
+  -------         ENDPROC       _HC595_WRITE_BYTE
+  -------         PROC          _DM_WRITE_CHAR
+  D:0008H         SYMBOL        date
+  D:0005H         SYMBOL        site
+  -------         DO            
+  D:0009H         SYMBOL        i
+  D:000AH         SYMBOL        j
+  -------         ENDDO         
+  C:0603H         LINE#         51
+  C:0605H         LINE#         52
+  C:060AH         LINE#         53
+  C:0610H         LINE#         55
+  C:0613H         LINE#         56
+  C:0622H         LINE#         57
+  C:0625H         LINE#         58
+  C:0628H         LINE#         59
+  C:062CH         LINE#         60
+  C:062EH         LINE#         61
+  C:065CH         LINE#         63
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/11/2016  23:39:41  PAGE 5
+
+
+  C:065EH         LINE#         64
+  C:0665H         LINE#         65
+  C:066EH         LINE#         67
+  -------         ENDPROC       _DM_WRITE_CHAR
+  -------         ENDMOD        DOTMATRIX
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY_MS?DELAY
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?HC595_OUT?DOTMATRIX
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_HC595_WRITE_BYTE?DOTMATRIX
+
+Program Size: data=12.0 xdata=0 code=1770
+LINK/LOCATE RUN COMPLETE.  3 WARNING(S),  0 ERROR(S)
